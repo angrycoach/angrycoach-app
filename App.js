@@ -11,30 +11,43 @@ import {
   Text,
   View
 } from 'react-native';
+import Home from './src/Home';
 
-const instructions = Platform.select({
-  ios: 'Press Cmd+R to reload,\n' +
-    'Cmd+D or shake for dev menu',
-  android: 'Double tap R on your keyboard to reload,\n' +
-    'Shake or press menu button for dev menu',
-});
+
 
 type Props = {};
 export default class App extends Component<Props> {
+
+  constructor(props, context) {
+    super(props, context);
+
+    this.state = {
+      ready: false,
+    };
+  }
+
+  componentDidMount () {
+    setTimeout(() => {
+      this.setState({ ready: true })
+    }, 2400)
+  }
+
   render() {
-    return (
-      <View style={styles.container}>
-        <Text style={styles.welcome}>
-          Welcome to React Native!
-        </Text>
-        <Text style={styles.instructions}>
-          To get started, edit App.js
-        </Text>
-        <Text style={styles.instructions}>
-          {instructions}
-        </Text>
-      </View>
-    );
+    
+    if (this.state.ready === false) {
+      return  (
+        <View style={styles.container}>
+          <Text style={styles.welcome}>Angry Coach</Text>
+          <Text style={styles.instructions}>2018</Text>
+        </View>
+      );
+      
+    }else{
+      return (
+        <Home/>
+      );
+    }
+    
   }
 }
 
@@ -43,16 +56,19 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#F5FCFF',
+    backgroundColor: '#05668D',
   },
   welcome: {
-    fontSize: 20,
+    fontSize: 30,
+    color:'white',
+    fontWeight: 'bold',
     textAlign: 'center',
     margin: 10,
   },
   instructions: {
     textAlign: 'center',
-    color: '#333333',
+    color: 'white',
+    fontSize: 20,
     marginBottom: 5,
   },
 });
