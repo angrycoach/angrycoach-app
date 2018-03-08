@@ -26,29 +26,58 @@ export default class Home extends Component<Props> {
   constructor(props, context) {
     super(props, context);
 
-    let array = [];
-    
-    AsyncStorage.getItem('data').then((value) => {
-      if (value !== null){
-        array = JSON.parse(value);
-
-        this.setState({
-          noteArray: array,
-        })
-      }
-    });
-
     this.state = {
-      noteArray: array,
+      notes: [],
       noteText: '',
     };
   }
 
+  addNote(){
+    if (this.state.noteText === '') {
+      alert('É preciso inserir uma tarefa');
+      return;
+    }
+
+    var task = {name: this.state.noteText};
+    
+    fetch(
+      "https://desolate-shore-59639.herokuapp.com/task", 
+      { 
+          method: 'POST', 
+          headers: { 'content-type': 'application/json'}, 
+          body : JSON.stringify(task)
+      }
+    );
+  }
+
+  deleteNote(key){
+    let notesArray = this.state.notes;
+    notesArray.splice(key, 1);
+    this.setState({notes: notesArray});
+  }
+
+  componentDidMount(){
+    this.retrieveDataAPI();
+  }
+
+  retrieveDataAPI(){
+    fetch('https://desolate-shore-59639.herokuapp.com/task')
+    .then(response => response.json())
+    .then(body  => { 
+      this.setState({notes: body});
+    })
+    .catch( err => alert(err));
+  }
+
   render() {
 
-    let notes = this.state.noteArray.map((val, key) => {
-      return <Task key={key} keyval={key} val={val} deleteMethod={ () => this.deleteNote(key)}/>
+    let notes = this.state.notes.map((val, key) => {
+
+      if (!val.deleted){
+        return <Task key={key} keyval={key} note={val} deleteMethod={ () => this.deleteNote(key)}/>
+      }
     });
+    console.log(notes);
 
     return (
       <View style={styles.container}>
@@ -73,27 +102,6 @@ export default class Home extends Component<Props> {
         </View>
       </View>
     );
-  }
-
-  addNote(){
-    if(this.state.noteText) {
-      var d = new Date();
-      this.state.noteArray.push({'date': d.getFullYear() + "/" + (d.getMonth() + 1) + "/" + d.getDate(), 'note': this.state.noteText});
-      this.setState({noteArray: this.state.noteArray});
-      this.setState({noteText: ''});
-      
-      //add to AsyncStorage
-      AsyncStorage.setItem('data', JSON.stringify(this.state.noteArray));
-
-    }
-  }
-
-  deleteNote(key){
-    this.state.noteArray.splice(key, 1);
-    this.setState({noteArray: this.state.noteArray});
-
-    //delete to AsyncStorage (add updated data)
-    AsyncStorage.setItem('data', JSON.stringify(this.state.noteArray));
   }
 }
 
