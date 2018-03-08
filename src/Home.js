@@ -39,6 +39,7 @@ export default class Home extends Component<Props> {
     }
 
     var task = {name: this.state.noteText};
+
     
     fetch(
       "https://desolate-shore-59639.herokuapp.com/task", 
@@ -47,8 +48,18 @@ export default class Home extends Component<Props> {
           headers: { 'content-type': 'application/json'}, 
           body : JSON.stringify(task)
       }
-    );
+    ).then(() => this.retrieveDataAPI());
+
+    this.setState({noteText: ''});
   }
+
+  // handleKeyPress = (event) => {
+  //   if (event.key === 'Enter'){
+  //     let notesArray = this.state.notes;
+  //     notesArray.push(this.state.noteText);
+  //     this.setState({noteText: ''});
+  //   }
+  // }
 
   deleteNote(key){
     let notesArray = this.state.notes;
@@ -77,7 +88,6 @@ export default class Home extends Component<Props> {
         return <Task key={key} keyval={key} note={val} deleteMethod={ () => this.deleteNote(key)}/>
       }
     });
-    console.log(notes);
 
     return (
       <View style={styles.container}>
