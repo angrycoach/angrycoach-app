@@ -9,7 +9,7 @@ import {
   TouchableOpacity
 } from 'react-native';
 
-export default class Task extends Component {
+export default class Note extends Component {
 
     constructor(props){
         super(props);

@@ -17,7 +17,6 @@ import {
   Image,
   ImageBackground
 } from 'react-native';
-import Task from './components/Task';
 
 import ListNotes from './redux/containers/listnotescontainer';
 import AddNotes from './redux/containers/addnotescontainer';
