@@ -55,7 +55,6 @@ export default class Task extends Component {
         let currentNote = this.props.note;
         currentNote.deleted = true;
         this.saveNote(currentNote);
-        this.props.deleteMethod(); //Deleta Note da lista principal 
     }
 
     saveNote(note){
@@ -66,8 +65,19 @@ export default class Task extends Component {
                 headers: { 'content-type': 'application/json'}, 
                 body : JSON.stringify(note)
             }
-        );
+        ).then(() => this.retrieveDataAPI());
+
         this.setState({done: note.done, deleted: note.deleted})
+    }
+
+    retrieveDataAPI(){
+        fetch('https://desolate-shore-59639.herokuapp.com/task')
+        .then(response => response.json())
+        .then(body  => {
+            //We pass the body from API to the Store
+            this.props.addAll(body);
+        })
+        .catch( err => alert(err));
     }
 
     render() {

@@ -19,97 +19,21 @@ import {
 } from 'react-native';
 import Task from './components/Task';
 
+import ListNotes from './redux/containers/listnotescontainer';
+import AddNotes from './redux/containers/addnotescontainer';
+
 type Props = {};
 
 export default class Home extends Component<Props> {
 
-  constructor(props, context) {
-    super(props, context);
-
-    this.state = {
-      notes: [],
-      noteText: '',
-    };
-  }
-
-  addNote(){
-    if (this.state.noteText === '') {
-      alert('É preciso inserir uma tarefa');
-      return;
-    }
-
-    var task = {name: this.state.noteText};
-
-    
-    fetch(
-      "https://desolate-shore-59639.herokuapp.com/task", 
-      { 
-          method: 'POST', 
-          headers: { 'content-type': 'application/json'}, 
-          body : JSON.stringify(task)
-      }
-    ).then(() => this.retrieveDataAPI());
-
-    this.setState({noteText: ''});
-  }
-
-  // handleKeyPress = (event) => {
-  //   if (event.key === 'Enter'){
-  //     let notesArray = this.state.notes;
-  //     notesArray.push(this.state.noteText);
-  //     this.setState({noteText: ''});
-  //   }
-  // }
-
-  deleteNote(key){
-    let notesArray = this.state.notes;
-    notesArray.splice(key, 1);
-    this.setState({notes: notesArray});
-  }
-
-  componentDidMount(){
-    this.retrieveDataAPI();
-  }
-
-  retrieveDataAPI(){
-    fetch('https://desolate-shore-59639.herokuapp.com/task')
-    .then(response => response.json())
-    .then(body  => { 
-      this.setState({notes: body});
-    })
-    .catch( err => alert(err));
-  }
-
   render() {
-
-    let notes = this.state.notes.map((val, key) => {
-
-      if (!val.deleted){
-        return <Task key={key} keyval={key} note={val} deleteMethod={ () => this.deleteNote(key)}/>
-      }
-    });
-
     return (
       <View style={styles.container}>
         <View style={styles.header}>
           <Text style={styles.headerText}>ANGRY COACH</Text>
         </View>
-        <ScrollView style={styles.scrollContainer}>
-          {notes}
-        </ScrollView>
-        <View style={styles.footer}>
-          <TouchableOpacity style={styles.addButton} onPress={this.addNote.bind(this)}>
-            <Text style={styles.addButtonText}>+</Text>
-          </TouchableOpacity>
-        </View>
-        <View>
-          <TextInput style={styles.TextInput}
-              onChangeText={(noteText) => this.setState({noteText})} value={this.state.noteText}
-              placeholder=' > Nova tarefa...' 
-              placeholderTextColor='#737373' 
-              underlineColorAndroid='transparent'>
-          </TextInput>
-        </View>
+        <ListNotes />
+        <AddNotes />
       </View>
     );
   }
@@ -130,10 +54,6 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: 18,
     padding: 18,
-  },
-  scrollContainer: {
-    flex: 1,
-    marginBottom: 100,
   },
   footer: {
     position: 'absolute',

@@ -13,7 +13,8 @@ import {
 } from 'react-native';
 import Home from './src/Home';
 
-
+import { Provider } from 'react-redux';
+import store from './src/redux/store';
 
 type Props = {};
 export default class App extends Component<Props> {
@@ -44,7 +45,9 @@ export default class App extends Component<Props> {
       
     }else{
       return (
-        <Home/>
+        <Provider store={store}>
+          <Home/>
+        </Provider>
       );
     }
     
